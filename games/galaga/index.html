@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>갤러그 (Galaga)</title>
+  </head>
+  <body>
+    <div id="wrap">
+      <canvas id="game" width="480" height="640" aria-label="갤러그 게임 화면"></canvas>
+      <div id="touch">
+        <div class="btn" id="touch-left" aria-label="왼쪽 이동"></div>
+        <div class="btn" id="touch-right" aria-label="오른쪽 이동"></div>
+        <div class="btn" id="touch-fire" aria-label="발사"></div>
+      </div>
+      <div id="help">
+        ← → 이동 &nbsp;|&nbsp; SPACE 발사 &nbsp;|&nbsp; P 일시정지 &nbsp;|&nbsp; ENTER 시작/재시작
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
