@@ -217,3 +217,19 @@ describe('적 체력', () => {
     expect(g.state.score).toBe(50);
   });
 });
+
+describe('무적 상호작용 (FR-P5)', () => {
+  it('무적 중 급강하 적과 겹쳐도 적이 파괴되거나 점수가 오르지 않는다', () => {
+    const g = startedGame();
+    settleFormation(g);
+    const p = g.state.player;
+    expect(p.invincible).toBeGreaterThan(0);
+    const bee = firstEnemyOfKind(g, 'bee');
+    const at = { x: p.x, y: p.y };
+    bee.phase = { kind: 'dive', t: 0, dur: 100, shootT: 100, curve: { p0: at, p1: at, p2: at, p3: at } };
+    g.update(STEP);
+    expect(g.state.enemies.some((e) => e.id === bee.id)).toBe(true);
+    expect(g.state.score).toBe(0);
+    expect(p.alive).toBe(true);
+  });
+});

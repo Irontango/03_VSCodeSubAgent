@@ -386,7 +386,8 @@ export class Game {
   private resolvePlayerHits(): void {
     const s = this.state;
     const p = s.player;
-    if (!p.alive) return;
+    // FR-P5: 무적 중에는 탄·적과 상호작용하지 않는다(무적 램으로 점수를 얻는 허점 방지).
+    if (!p.alive || p.invincible > 0) return;
     for (const b of s.enemyBullets) {
       if (boxesOverlap(b, p)) {
         b.y = CANVAS.height + 100;
