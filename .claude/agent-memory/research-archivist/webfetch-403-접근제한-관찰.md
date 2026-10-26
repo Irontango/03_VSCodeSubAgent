@@ -1,6 +1,6 @@
 ---
 name: webfetch-403-접근제한-관찰
-description: WebFetch가 다수의 학술/블로그 도메인에서 접근 차단(HTTP 403, 이후 EGRESS_BLOCKED)을 반환하는 현상 — 2026-08-03 최초 관찰, 2026-09-28 EGRESS_BLOCKED 형태로 재현 확인, 2026-10-12 api.github.com 403 재차단 + DNS 실패(ENOTFOUND) 신규 유형 확인, 도메인별 차단 패턴은 유동적
+description: WebFetch가 다수의 학술/블로그 도메인에서 접근 차단(HTTP 403, 이후 EGRESS_BLOCKED, DNS ENOTFOUND)을 반환하는 현상 — 2026-08-03 최초 관찰, 2026-09-28 EGRESS_BLOCKED 형태로 재현 확인, 2026-10-12 api.github.com 403 재차단 + DNS 실패(ENOTFOUND) 신규 유형 확인, 2026-10-26 DNS 실패 유형이 다른 도메인 군(huggingface.co/flutter.dev/wiki.seeedstudio.com)에서 재현, 도메인별 차단 패턴은 유동적
 metadata:
   type: project
 ---
@@ -21,4 +21,6 @@ metadata:
 
 **재확인 (2026-10-12, api.github.com 403 재발 + DNS 실패 신규 유형):** RC카 PWM/GPIO 모터 제어 동향 격주 후속 1회차([[pwm-gpio-모터제어-리서치-2026-10-12]])에서 **api.github.com(GitHub REST API)이 다시 403으로 전면 차단됨**(2026-09-28에 이어 재발) — GitHub HTML 페이지를 WebFetch로 직접 열람해 우회함. 이번 회차의 **신규 발견**은 **gpiozero.readthedocs.io가 DNS 해석 실패(ENOTFOUND)**로 접근 자체가 불가능했다는 점으로, 기존 403/EGRESS_BLOCKED와는 다른 **세 번째 실패 유형**임. 대응으로 GitHub raw changelog.rst(원문 1차 소스)로 대체 검증함. PyPI JSON API(pypi.org/pypi/.../json)는 이번에도 정상 작동 — PyPI는 지금까지 모든 세션에서 차단 사례가 보고되지 않아 **릴리스/버전 확인용 1차 소스로 상대적으로 신뢰할 수 있는 채널**로 재확인됨. 4개 세션(2026-08-03, 2026-09-28, 2026-10-12; 2026-08-17/08-31/09-14 회차는 명시적 기록 없음)에 걸쳐 차단 현상이 지속·변주되므로, "환경의 구조적 특성"이라는 기존 격상 판단이 재확인됨. 매 회차 초반에 주요 도메인(api.github.com, 대상 docs 사이트 등) 접근성을 먼저 점검하고 실패 시 즉시 대체 경로(HTML 직접 열람, raw 파일, PyPI API 등)로 전환하는 것을 표준 절차로 권고.
 
-Related: [[라즈베리파이-opencv-차선인식-리서치-2026-08-03]], [[라즈베리파이-opencv-차선인식-리서치-2026-09-28]], [[pwm-gpio-모터제어-리서치-2026-10-12]], [[리서치-발행일-검증-방법론]]
+**재확인 (2026-10-26, DNS 실패 유형이 다른 도메인 군에서 재현):** Flutter+라즈베리파이 WebSocket 원격 제어 격주 후속 2회차([[flutter-웹소켓-라즈베리파이-원격제어-리서치-2026-10-26]])에서 `huggingface.co`, `flutter.dev` 계열, `wiki.seeedstudio.com` 등에 대한 WebFetch 직접 접근이 **DNS 해석 실패(ENOTFOUND)**로 막힘 — 2026-10-12에 `gpiozero.readthedocs.io`에서 처음 관찰된 것과 **동일한 실패 유형(DNS)이 전혀 다른 도메인 군에서 재현**된 것으로, 403/EGRESS_BLOCKED와는 뚜렷이 구분되는 세 번째 유형(DNS ENOTFOUND)이 "1회성 이상 현상"이 아니라 **재발 가능한 패턴**임이 확정됨. 대응으로 WebSearch 스니펫 기반 교차검증으로 대체함(원문 1차 도메인 직접 열람 대신). 5개 세션(2026-08-03, 2026-09-28, 2026-10-12, 2026-10-26)에 걸쳐 차단/실패 현상이 지속·변주되므로, 매 회차 시작 시 "이번 세션에 어떤 도메인이 어떤 유형(403/EGRESS_BLOCKED/DNS)으로 막히는지" 선제 점검하는 절차를 모든 서브에이전트(특히 web-researcher, source-verifier)의 표준 작업 순서에 포함할 것을 권고.
+
+Related: [[라즈베리파이-opencv-차선인식-리서치-2026-08-03]], [[라즈베리파이-opencv-차선인식-리서치-2026-09-28]], [[pwm-gpio-모터제어-리서치-2026-10-12]], [[flutter-웹소켓-라즈베리파이-원격제어-리서치-2026-10-26]], [[리서치-발행일-검증-방법론]]
