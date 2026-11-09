@@ -1,6 +1,6 @@
 ---
 name: webfetch-403-접근제한-관찰
-description: WebFetch가 다수의 학술/블로그 도메인에서 접근 차단(HTTP 403, 이후 EGRESS_BLOCKED, DNS ENOTFOUND)을 반환하는 현상 — 2026-08-03 최초 관찰, 2026-09-28 EGRESS_BLOCKED 형태로 재현 확인, 2026-10-12 api.github.com 403 재차단 + DNS 실패(ENOTFOUND) 신규 유형 확인, 2026-10-26 DNS 실패 유형이 다른 도메인 군(huggingface.co/flutter.dev/wiki.seeedstudio.com)에서 재현, 도메인별 차단 패턴은 유동적
+description: WebFetch가 다수의 학술/블로그 도메인에서 접근 차단(HTTP 403, 이후 EGRESS_BLOCKED, DNS ENOTFOUND)을 반환하는 현상 — 2026-08-03 최초 관찰, 2026-09-28 EGRESS_BLOCKED 형태로 재현 확인, 2026-10-12 api.github.com 403 재차단 + DNS 실패(ENOTFOUND) 신규 유형 확인, 2026-10-26 DNS 실패 유형이 다른 도메인 군(huggingface.co/flutter.dev/wiki.seeedstudio.com)에서 재현, 2026-11-09 DNS 차단이 github.com을 제외한 거의 전역 도메인으로 확대, 도메인별·세션별 차단 패턴은 유동적
 metadata:
   type: project
 ---
@@ -23,4 +23,6 @@ metadata:
 
 **재확인 (2026-10-26, DNS 실패 유형이 다른 도메인 군에서 재현):** Flutter+라즈베리파이 WebSocket 원격 제어 격주 후속 2회차([[flutter-웹소켓-라즈베리파이-원격제어-리서치-2026-10-26]])에서 `huggingface.co`, `flutter.dev` 계열, `wiki.seeedstudio.com` 등에 대한 WebFetch 직접 접근이 **DNS 해석 실패(ENOTFOUND)**로 막힘 — 2026-10-12에 `gpiozero.readthedocs.io`에서 처음 관찰된 것과 **동일한 실패 유형(DNS)이 전혀 다른 도메인 군에서 재현**된 것으로, 403/EGRESS_BLOCKED와는 뚜렷이 구분되는 세 번째 유형(DNS ENOTFOUND)이 "1회성 이상 현상"이 아니라 **재발 가능한 패턴**임이 확정됨. 대응으로 WebSearch 스니펫 기반 교차검증으로 대체함(원문 1차 도메인 직접 열람 대신). 5개 세션(2026-08-03, 2026-09-28, 2026-10-12, 2026-10-26)에 걸쳐 차단/실패 현상이 지속·변주되므로, 매 회차 시작 시 "이번 세션에 어떤 도메인이 어떤 유형(403/EGRESS_BLOCKED/DNS)으로 막히는지" 선제 점검하는 절차를 모든 서브에이전트(특히 web-researcher, source-verifier)의 표준 작업 순서에 포함할 것을 권고.
 
-Related: [[라즈베리파이-opencv-차선인식-리서치-2026-08-03]], [[라즈베리파이-opencv-차선인식-리서치-2026-09-28]], [[pwm-gpio-모터제어-리서치-2026-10-12]], [[flutter-웹소켓-라즈베리파이-원격제어-리서치-2026-10-26]], [[리서치-발행일-검증-방법론]]
+**재확인 (2026-11-09, DNS 차단이 github.com 제외 거의 전역으로 확대 — 가장 광범위한 사례):** 초음파 센서 장애물 회피 3회차 격주 후속 리서치([[초음파-센서-장애물회피-리서치-2026-11-09]])에서 **github.com을 제외한 거의 모든 외부 도메인**(arxiv.org, doi.org, link.springer.com, mdpi.com, os.mbed.com, dspace.kmitl.ac.th, api.crossref.org, export.arxiv.org 등)이 **DNS 해석 실패(ENOTFOUND)**로 막힘 — 지금까지는 "일부 도메인 군"에서만 DNS 실패가 보고되었으나, 이번 회차는 **단일 예외(github.com)만 남기고 사실상 전역 차단**된 가장 극단적인 사례임. 이로 인해 다수 핵심 항목(arXiv 논문 원문, DOI 조회, mbed.org 프로젝트)이 WebSearch 스니펫(2차정보) 기반으로만 검증되었고, github.com이 정상 작동한 두 건(GitHub 저장소 소스코드/README)만 1차 직접열람 검증이 가능했음. 6개 세션(2026-08-03, 2026-09-28, 2026-10-12, 2026-10-26, 2026-11-09)에 걸쳐 차단/실패 현상이 지속·심화되므로, **매 회차 시작 시 주요 도메인 접근성을 선제 점검**하는 절차를 더욱 강화할 것을 권고(특히 차단 범위가 확대되는 경향이 있으므로, "일부만 확인하고 나머지는 괜찮을 것"이라고 가정하지 말 것).
+
+Related: [[라즈베리파이-opencv-차선인식-리서치-2026-08-03]], [[라즈베리파이-opencv-차선인식-리서치-2026-09-28]], [[pwm-gpio-모터제어-리서치-2026-10-12]], [[flutter-웹소켓-라즈베리파이-원격제어-리서치-2026-10-26]], [[초음파-센서-장애물회피-리서치-2026-11-09]], [[리서치-발행일-검증-방법론]]
